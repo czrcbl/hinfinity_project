@@ -75,7 +75,7 @@ def step_info(time, y):
     os = (np.max(y) - sval)/sval
     pt = time[np.argmax(y)]
     
-    idx = np.where(np.logical_and(y >= 0.1 * sval, y <= 0.9 * sval))[0] 
+    idx = np.where((y >= 0.1 * sval) & (y <= 0.9 * sval))[0] 
     if len(idx) == 0:
         rt = float('NaN')
     else:
@@ -148,3 +148,7 @@ def load_circle_J_traj():
     from scipy.io import loadmat
     
     return loadmat('data/circle_traj_J.mat')['traj']
+
+
+if __name__ == '__main__':
+    pass

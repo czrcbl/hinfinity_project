@@ -58,12 +58,12 @@ dsys = control.c2d(csys, Ts, 'zoh')
 
 [Ad, Bd, Cd, Dd] = control.ssdata(dsys)
 
-#converts the wheel velocities into the states
+#converts the wheel velocities to the states
 W2S = np.array([[0, np.sqrt(3) * r / 3.0, -np.sqrt(3) * r / 3.0],
                [-2.0 * r / 3.0, r / 3.0, r / 3.0],
                [r / (3.0 * b), r / (3.0 * b), r / (3.0 * b)]])
 
-#converts the states into the wheel velocities
+#converts the states to the wheel velocities
 S2W = np.array([[0, -1, b],
               [np.sqrt(3)/2, 1/2, b],
               [-np.sqrt(3)/2, 1/2, b]])/r

@@ -35,9 +35,17 @@ def project(Ad, Bd, Cd, Dd, q, r, solver=cvx.SCS):
     
     Parameters:
     -----------
-    Ad, Bd, Cd, Dd: Discrete time system state space matrices.
-    q: cicular region center, over the x axis.
-    r: circular region radius.
+        Ad, Bd, Cd, Dd : Discrete time system state space matrices.
+        q : cicular region center, over the x axis.
+        r : circular region radius.
+        solver : a string with the cvx solver name.
+    
+    Returns:
+    --------
+        K : gain matrix of the controler.
+        Hinf_norm : Hinf norm of the closed loop system.
+        Pop : Lyapunov matrix
+        status : Solver status.
     """
     
     Z = np.zeros((3,3))
@@ -56,22 +64,23 @@ def project(Ad, Bd, Cd, Dd, q, r, solver=cvx.SCS):
 
 
 def hinf_project_pole_alloc(A, B1, B2, C1, C2, D11, D12, D21, D22, q, r, solver=cvx.SCS):
-    """ Perform hinf project with pole allocation in a circular subregion, for
+    """ 
+    Perform hinf project with pole allocation in a circular subregion, for
     discrete time LTI systems.
     
-    Parameters
-    ----------
+    Parameters:
+    -----------
+        A, B1, ... D22 : Generalized form system matrices.
+        q : cicular region center, over the x axis.
+        r : circular region radius.
+        solver: a string with the cvx solver name.
     
-    A, B1, ... D22: Generalized form system matrices.
-    q: cicular region center, over the x axis.
-    r: circular region radius.
-    
-    Returns
-    -------
-    K: gain matrix of the controler.
-    Hinf_norm: Hinf norm of the closed loop system.
-    Pop: Lyapunov matrix
-    status: Solver status.
+    Returns:
+    --------
+        K : gain matrix of the controler.
+        Hinf_norm : Hinf norm of the closed loop system.
+        Pop : Lyapunov matrix
+        status : Solver status.
     """
     
     assert r > 0, 'r must be positive.'
