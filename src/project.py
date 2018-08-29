@@ -79,7 +79,7 @@ def hinf_project_pole_alloc(A, B1, B2, C1, C2, D11, D12, D21, D22, q, r, solver=
     --------
         K : gain matrix of the controler.
         Hinf_norm : Hinf norm of the closed loop system.
-        Pop : Lyapunov matrix
+        Pop : Lyapunov matrix.
         status : Solver status.
     """
     
