@@ -11,6 +11,6 @@ In the file `project.py` functions to computer the H-infinty controller for an a
 
 ## Simulation
 
-In the notebook `evaluation_SCS` the results of projects performed it SCS solver are analysed, a controller is chosen and simulations are performed. 
+In the notebook `evaluation_SCS` the results of projects performed with the SCS solver are analysed, a controller is chosen and simulations are performed. 
 
 ## 
