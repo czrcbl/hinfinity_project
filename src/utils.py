@@ -56,9 +56,15 @@ class StepInfoData:
 
         return s[:-2] + ')'
             
+            
 def step_info(time, y):
     
     assert len(time) == len(y), 'signal and time must have the same length'
+    assert len(y.shape) <= 2, 'signal must be 1 or 2 dimensional'
+    assert  (len(y.shape) == 1) or (len(y) == y.shape[0] * y.shape[2]), '2d array must be a row or column vector'
+    
+    # in case y be a np.matrix
+    y = np.array(y).flatten()
     
     for i in range(len(y)):
         s = y[i:]

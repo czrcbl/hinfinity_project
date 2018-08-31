@@ -10,6 +10,7 @@ In the file `system_data.py` the robot parameters are defined and its state spac
 ## Project
 
 ![general_form](https://raw.githubusercontent.com/czrcbl/hinfinity_project/master/figures/forma_geral.png)
+
 In the file `project.py`, functions to computer the H-infinty controller for an arbitrary system on the general form are defined.
 
 ## Simulation

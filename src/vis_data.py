@@ -3,46 +3,56 @@ import matplotlib.pyplot as plt
 
 
 def triple_plot(data, title, figsize=(8, 8)):
-    
+    """Plot the control signals"""
     fig = plt.figure(figsize=figsize)
         
     x = np.arange(len(data))
     ax = fig.add_subplot(311)
     ax.step(x, data[:, 0])
+    plt.title('Motor 1')
     plt.grid(True)
     # ax.grid(color='k', linestyle='--', linewidth=1)
     ax = fig.add_subplot(312)
     ax.step(x, data[:, 1])
+    plt.title('Motor 2')
     plt.grid(True)
     ax = fig.add_subplot(313)
     ax.step(x, data[:, 2])
-    plt.title(title)
+    plt.title('Motor 3')
+#    plt.title(title)
+    
     plt.grid(True)
+    fig.suptitle(title)
 
 
 def triple_plot2(data1, data2, title1, title2, figsize=(8, 8)):
-    
+    """Plot the states and the reference"""
 
-    fig = plt.figure(figsize=figsize)
-    
+    fig = plt.figure(figsize=figsize)  
     x = np.arange(len(data1))
+    
     ax = fig.add_subplot(311)
     ax.step(x, data1[:, 0], label=title1)
     ax.step(x, data2[:, 0], label=title2)
+    plt.title(r'$v$')
     plt.legend()
     plt.grid(True)
     # ax.grid(color='k', linestyle='--', linewidth=1)
     ax = fig.add_subplot(312)
     ax.step(x, data1[:, 1], label=title1)
     ax.step(x, data2[:, 1], label=title2)
+    plt.title(r'$v_n$')
     plt.legend()
     plt.grid(True)
     ax = fig.add_subplot(313)
     ax.step(x, data1[:, 2], label=title1)
     ax.step(x, data2[:, 2], label=title2)
+    plt.title(r'$\omega$')
     # fig.suptitle(title)
     plt.legend()
     plt.grid(True)
+    
+    plt.suptitle('States')
 
 
 def plot_poles(poles, q, r, c='r', label='Poles'):

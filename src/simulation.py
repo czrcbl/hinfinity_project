@@ -9,9 +9,9 @@ def system(y, t, u, sys):
     y = y.reshape(3, 1)
     u = u.reshape(3, 1)
     dydt = np.array(sys.A.dot(y) + sys.B.dot(u))
-    dydt = dydt.flatten()  # makes dydt one dimensional
 
-    return dydt
+    return dydt.flatten()
+
 
 #TODO: Review this func
 def system_nl(y, t, u, sys, nldat):
@@ -27,6 +27,7 @@ def system_nl(y, t, u, sys, nldat):
     dydt = np.array(F + Fa)
     
     return dydt.flatten()
+
 
 class Simulation:
 
@@ -124,7 +125,6 @@ def update_pose(states, pose_old, Ts):
 
 
 class Trajectory:
-    """Implement the simple trajectory following algorithm""" 
     
     def __init__(self, traj, v_nav, radius=0.05):
         self.traj = traj
@@ -160,7 +160,7 @@ class Trajectory:
         return ref
     
     
-def tranjectory_sim(trajectory, v_nav, sim, K ):
+def trajectory_sim(trajectory, v_nav, sim, K ):
     
     traj = Trajectory(trajectory, v_nav)
     Ts = sim.Ts
@@ -205,8 +205,6 @@ def tranjectory_sim(trajectory, v_nav, sim, K ):
         i += 1
 
     return states_vec[:i], control_signal_vec[:i], ref_vec[:i], pose_vec[:i]
-
-
 
 
 if __name__ == '__main__':

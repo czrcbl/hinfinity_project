@@ -90,7 +90,7 @@ def hinf_project_pole_alloc(A, B1, B2, C1, C2, D11, D12, D21, D22, q, r, solver=
     n = A.shape[0]
     
     L = cvx.Variable((B2.shape[1], n))
-    P = cvx.Variable((n, n), PSD=True)
+    P = cvx.Variable((n, n))
     gamma2 = cvx.Variable()
     
     LMI1 = cvx.bmat([
@@ -135,7 +135,7 @@ def hinf_project_pole_alloc(A, B1, B2, C1, C2, D11, D12, D21, D22, q, r, solver=
 def multiple_projects(Ad, Bd, Cd, Dd, csys, Ts, q_step=0.05, r_step=0.05, solver=cvx.SCS):
     """
     Project and evaluate a set of controllers for multiple values of 
-    radius and center
+    radiuses and centers
     """
     ref = make_inv_ref([0.6, 0, 0], [-0.6, 0, 0], 100)
     
@@ -144,28 +144,28 @@ def multiple_projects(Ad, Bd, Cd, Dd, csys, Ts, q_step=0.05, r_step=0.05, solver
     
     controllers = []
     
-    for c in centers:
+    for q in centers:
         for r in radius:
-            if np.abs(c) + r < 1:
-                print('Center: %f, Radius: %f' % (r, c))
+            if np.abs(q) + r < 1:
+                print('Center: %f, Radius: %f' % (q, r))
                 try:
-                    K, norm, P, status = project(Ad, Bd, Cd, Dd, c, r, solver=solver)
-                    cont = Controller(K, norm, c, r, P, status, get_clpoles(Ad, Bd, K))
+                    K, norm, P, status = project(Ad, Bd, Cd, Dd, q, r, solver=solver)
+                    c = Controller(K, norm, q, r, P, status, get_clpoles(Ad, Bd, K))
                     states, control_signal, time = sim_closed_loop(ref, Simulation(csys, Ts), K)
                     info = step_info(time[:40], states[:40, 0])
-                    cont.stepinfo = info
-                    cont.u_max_var = np.max(np.abs(control_signal[:-1, :] - control_signal[1:, :]))
+                    c.stepinfo = info
+                    c.u_max_var = np.max(np.abs(control_signal[:-1, :] - control_signal[1:, :]))
                     
                 except OptException as e:
                     # Save the status
                     status = str(e).split()[-1]
-                    cont = Controller(None, None, c, r, None, status, None)
+                    c = Controller(None, None, c, r, None, status, None)
                 except cvx.error.SolverError:
                     status = 'solver_error'
-                    cont = Controller(None, None, c, r, None, status, None)
+                    c = Controller(None, None, c, r, None, status, None)
                     
                 print(status)                    
-                controllers.append(cont)
+                controllers.append(c)
                     
     return controllers
     
@@ -175,7 +175,7 @@ if __name__ == '__main__':
     import system_data as sysdat
     from system_data import Ad, Bd, Cd, Dd
     
-    controllers = multiple_projects(Ad, Bd, Cd, Dd, sysdat.csys, sysdat.Ts, q_step=0.025, r_step=0.025, solver=cvx.SCS)
+    controllers = multiple_projects(Ad, Bd, Cd, Dd, sysdat.csys, sysdat.Ts, q_step=0.05, r_step=0.05, solver=cvx.SCS)
     save('data/controllers_solver-SCS_all.pkl', controllers)
 #    eval_controllers('data/controllers_solver-SCS_all.pkl', sysdat.csys, sysdat.Ts, controllers)
 
@@ -183,5 +183,4 @@ if __name__ == '__main__':
 #    controllers = multiple_project(Ad, Bd, Cd, Dd, solver=cvx.MOSEK)
 #    eval_controllers('data/controllers_solver-MOSEK_all.pkl', sysdat.csys, sysdat.Ts, controllers)
 
-    
  
