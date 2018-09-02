@@ -24,7 +24,11 @@ class Controller:
         self.u_max_var = None
         
     def __str__(self):
-        return 'Center: {0:.2f}\nRadius: {1:.2f}\nHinf Norm: {2:.2f}\nStatus: {3}\nPoles: {4}'.format(self.q, self.r, self.norm, self.status, self.poles)
+        return 'Center: {0:.2f}\n'\
+                'Radius: {1:.2f}\n'\
+                'Hinf Norm: {2:.2f}\n'\
+                'Status: {3}\n'\
+                'Poles: {4}'.format(self.q, self.r, self.norm, self.status, self.poles)
         
     def __repr__(self):
         return str(self)

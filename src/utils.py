@@ -37,6 +37,25 @@ def get_clpoles(Ad, Bd, K):
     return np.linalg.eig(A + B2.dot(K))[0]
 
 
+def get_clmat(Ad, Bd, Cd, Dd, K):
+    
+    Z = np.zeros((3,3))
+    I = np.eye(3)
+    A = np.block([[Ad, Z], [I, I]])
+    B1 = np.vstack((I, Z))
+    B2 = np.vstack((Bd, Z))
+    C1 = np.block([[I, Z], [Z, Z]])
+    D11 = np.block([[Z], [Z]])
+    D12 = np.block([[Z], [I]])
+    
+    Acl = A + B2.dot(K)
+    Bcl = B1
+    Ccl = C1 + D12.dot(K)
+    Dcl = D11
+    
+    return Acl, Bcl, Ccl, Dcl
+
+
 class StepInfoData:
     
     def __init__(self, **kargs):
