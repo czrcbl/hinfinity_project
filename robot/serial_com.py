@@ -178,7 +178,7 @@ class RobotCom:
 
     def init_serial(self):
         """The robot starts to send the data once it receives this message."""
-        parameter = ''
+        parameter = ''.encode()
         message = self.make_message(1, parameter)
         self.send_command(message)
 

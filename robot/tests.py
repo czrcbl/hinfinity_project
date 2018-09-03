@@ -10,7 +10,7 @@ import time
 
 def test_sampling_time():
 
-    Ts = sysdat.Ts
+#    Ts = sysdat.Ts
     try:
         com = RobotCom()
         print('Port Openned:', com.serial.name)
@@ -26,7 +26,7 @@ def test_sampling_time():
         tic = time.time()
         if n > 0:
             delay = tic - tac
-            print('delay', delay)
+            print('Ts', delay)
             # Check if the sampling time is within a 10% error
         tac = tic
 
@@ -50,9 +50,9 @@ def test_movement(control_signal):
     N = 100 # Number of samples
     for _ in range(N):
         data = com.receive_message()
-        vel = np.array([data.m1_vel, data.m2_vel, data.m3_vel])
+        vel = np.array([data.m1_vel, data.m2_vel, data.m3_vel]).reshape(3,1)
         print('wheel', vel)
-        states = wheel2states(vel)
+        states = sysdat.W2S.dot(vel)
         print('States', states)
         com.send_control_signal(control_signal)
 
