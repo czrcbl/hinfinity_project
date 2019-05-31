@@ -1,5 +1,5 @@
 # hinfinty_project
-This repository contains a port of the project performed in [Controle Hinf por Realimentação de Estados Aplicado a um Robô Omnidirecional](https://www.dropbox.com/s/hyhj96dbqk2cops/TFG_Cezar_Lemos.pdf?dl=0) (originaly in Matlab) to python.
+This repository contains the project performed in [Controle Hinf por Realimentação de Estados Aplicado a um Robô Omnidirecional](https://www.dropbox.com/s/hyhj96dbqk2cops/TFG_Cezar_Lemos.pdf?dl=0) in python.
 
 ## Robot
 
