@@ -11,6 +11,8 @@ import numpy as np
 import json
 from pathlib import Path
 from src.vis_data import plot_pose, triple_plot2, plot_poles
+from src import system_data as sysdat
+
 FIELD_DIM = 10
 CANVAS_DIM = 700
 CONV_FACTOR = FIELD_DIM / CANVAS_DIM
@@ -169,6 +171,37 @@ def main():
 
     fig = triple_plot2(states_vec, ref_vec, 'States', 'Reference', figsize=(8, 10))
     st.pyplot(fig)
+
+
+    def create_robot_annimations(pose_vec):
+        import cv2
+        import os
+        import subprocess
+        os.makedirs("temp", exist_ok=True)
+        cf = 2048/10
+        size = (2048, 2048, 3)
+        frame_template = np.zeros(size, dtype=np.uint8)
+        video_frames = []
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        
+        temp_video_path = "temp/sim_video.mp4"
+        conv_video_path = "temp/sim_video_conv.mp4"
+        writer = cv2.VideoWriter(temp_video_path, fourcc, 1 / sysdat.Ts, (2048, 2048))
+        for v in pose_vec:
+            frame = frame_template.copy()
+            print(v)
+            frame = cv2.circle(frame, (int(cf * v[0]), int(cf * v[1])), 100, (255, 255, 255), -1)
+            # video_frames.append(frame)
+            writer.write(frame)
+        writer.release()
+
+        convertedVideo = "./testh264.mp4"
+        subprocess.call(args=f"ffmpeg -y -i {temp_video_path} -c:v libx264 {conv_video_path}".split(" "))
+        # video = np.array(video_frames)
+        # st.write(video.shape)
+        st.video(conv_video_path, format="MPEG-4")
+
+    create_robot_annimations(pose_vec)
 
 
 
