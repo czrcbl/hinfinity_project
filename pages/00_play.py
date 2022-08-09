@@ -21,7 +21,7 @@ import os
 import subprocess
 
 FIELD_WH = 5
-CANVAS_WH = 700
+CANVAS_WH = 500
 
 TITTLE = "# 🎮 Play with the Simulation"
 
@@ -320,6 +320,15 @@ def objects2points(objects, CONV_FACTOR):
     return points
 
 
+@st.cache(allow_output_mutation=True)
+def do_simulation(traj, v_nav, sim, K):
+
+    states_vec, control_signal_vec, ref_vec, pose_vec = trajectory_sim(
+        traj, v_nav, sim, K
+    )
+    return states_vec, control_signal_vec, ref_vec, pose_vec
+
+
 def main():
     global FIELD_WH, CANVAS_WH
 
@@ -339,6 +348,8 @@ def main():
     bg_color = "#FFFFFF"
     realtime_update = True
 
+    # Create a canvas component
+
     st.markdown(
         """
         ### Path Drawing Canvas
@@ -348,7 +359,6 @@ def main():
         Choose the drawing tool on the side bar, the drawing can be reset on the trash can below the canvas.
     """
     )
-    # Create a canvas component
     canvas_result = st_canvas(
         fill_color="rgba(255, 165, 0, 0.3)",  # Fixed fill color with some opacity
         stroke_width=stroke_width,
@@ -356,13 +366,17 @@ def main():
         background_color=bg_color,
         background_image=Image.fromarray(generate_start_frame(FIELD_WH)),
         update_streamlit=realtime_update,
-        height=700,
-        width=700,
+        height=CANVAS_WH,
+        width=CANVAS_WH,
         drawing_mode=drawing_mode,
         point_display_radius=point_display_radius if drawing_mode == "point" else 0,
         display_toolbar=True,
         key="canvas",
     )
+    tab_controller, tab_video, tab_plots = st.tabs(
+        ["Controller Data", "Simulation Video", "Simulation Plots"]
+    )
+    # st.session_state["canvas_result"] = canvas_result.json_data
 
     # Do something interesting with the image data and paths
     # if canvas_result.image_data is not None:
@@ -412,30 +426,36 @@ def main():
     c = st.sidebar.selectbox(
         "Filtered Controllers",
         filt_controlers,
-        format_func=lambda c: f"Norm: {c.norm:.2f}",
+        format_func=lambda c: f"Norm: {c.norm:.2f}, Center: {c.q:.2f}, Radius: {c.r:.2f}",
     )
 
-    st.sidebar.write(
-        f"Norm: {c.norm:.2f} - SettlingTime: {c.stepinfo.SettlingTime:.2f} - Overshoot: {c.stepinfo.Overshoot:.2f} - Umax_var: {c.u_max_var:.2f}"
-    )
+    tab_controller.text(str(c))
+
+    # tab_controller.write(
+    #     f"Norm: {c.norm:.2f} - SettlingTime: {c.stepinfo.SettlingTime:.2f} - Overshoot: {c.stepinfo.Overshoot:.2f} - Umax_var: {c.u_max_var:.2f}"
+    # )
     # c = controllers[idx[-1]]
 
-    st.sidebar.markdown(
+    tab_controller.markdown(
         "The blue circle represents the constraint on the poles position."
     )
     fig = plot_poles(c.poles, c.q, c.r)
-    st.sidebar.pyplot(fig)
+    tab_controller.pyplot(fig)
 
-    if len(objects) == 0 or not st.button("Start Simulation"):
-        st.write("Draw Trajectory First")
-        st.write("Press Start Simulation")
+    if not st.sidebar.button("Start Simulation"):
+        tab_video.warning("Simulation not started, press Start Simulation button")
+        tab_plots.warning("Simulation not started, press Start Simulation button")
         return
 
-    st.markdown(
-        """
-        ## Results
-    """
-    )
+    if len(objects) == 0:
+        st.sidebar.warning("Draw Trajectory First")
+        return
+
+    # st.markdown(
+    #     """
+    #     ## Results
+    # """
+    # )
 
     with st.spinner():
         points = objects2points(objects, FIELD_WH / CANVAS_WH)
@@ -446,15 +466,18 @@ def main():
         traj[:, 1] = FIELD_WH - traj[:, 1]
 
         # st.write(traj)
-        states_vec, control_signal_vec, ref_vec, pose_vec = trajectory_sim(
+
+        states_vec, control_signal_vec, ref_vec, pose_vec = do_simulation(
             traj, v_nav, sim, c.K
         )
 
         sim_drawer = SimulationDrawer(
             pose_vec, states_vec, image_wh=2048, field_wh=FIELD_WH
         )
+
         conv_video_path = sim_drawer.generate_video()
 
+    with tab_video:
         st.markdown(
             """
             ## Robot Movement Video """
@@ -462,11 +485,14 @@ def main():
 
         st.video(conv_video_path, format="MPEG-4")
 
-    fig = plot_pose(pose_vec, traj, size=FIELD_WH)
-    st.pyplot(fig)
+    with tab_plots:
 
-    fig = triple_plot2(states_vec, ref_vec, "States", "Reference", figsize=(8, 10))
-    st.pyplot(fig)
+        cols = st.columns(2)
+        fig = plot_pose(pose_vec, traj, size=FIELD_WH)
+        cols[0].pyplot(fig)
+
+        fig = triple_plot2(states_vec, ref_vec, "States", "Reference", figsize=(8, 10))
+        cols[1].pyplot(fig)
 
 
 main()
