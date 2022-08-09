@@ -86,7 +86,7 @@ def scatter_controllers(arrs, titles, figsize=(8, 8)):
     return fig
 
 
-def plot_pose(pose, traj, figsize=(8, 8)):
+def plot_pose(pose, traj, size, figsize=(8, 8)):
     
     x = traj[:, 0]
     y = traj[:, 1]
@@ -95,6 +95,8 @@ def plot_pose(pose, traj, figsize=(8, 8)):
     ax = fig.add_subplot(111)
     ax.plot(pose[:, 0], pose[:, 1], label='Trajectory')
     ax.scatter(x, y, marker='*', c='r', s=100, label='Checkpoints')
+    ax.set_xlim((0, size))
+    ax.set_ylim((0, size))
     fig.suptitle('Trajectory')
     plt.legend()
     plt.grid(True)

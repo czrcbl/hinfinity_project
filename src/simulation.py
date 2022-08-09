@@ -1,7 +1,7 @@
 from scipy.integrate import odeint
 from scipy.io import loadmat
 import numpy as np
-import system_data as sysdat
+from . import system_data as sysdat
 
 
 def system(y, t, u, sys):
@@ -167,7 +167,8 @@ def trajectory_sim(trajectory, v_nav, sim, K ):
     aug_states_old = np.zeros(shape=(6, 1))
     aug_states = np.zeros(shape=(6, 1))
     control_signal = np.zeros(shape=(3, 1))
-    pose_old = np.zeros(3)
+    # pose_old = np.zeros(3)
+    pose_old = trajectory[0]
     
     N = 5000
     control_signal_vec = np.empty(shape=(N, 3))

@@ -1,9 +1,9 @@
 import numpy as np
 import cvxpy as cvx
-from utils import save, step_info, make_inv_ref
-from simulation import Simulation, sim_closed_loop
-from utils import get_clpoles
-
+from .utils import save, step_info, make_inv_ref
+from .simulation import Simulation, sim_closed_loop
+from .utils import get_clpoles
+from src import utils
 
 class OptException(Exception):
     pass
