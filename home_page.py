@@ -1,5 +1,6 @@
 import streamlit as st
 
+st.set_page_config(page_title="Home Page", layout="wide")
 
 def robot_description():
 
@@ -29,7 +30,21 @@ page_names_to_funcs = {
 }
 
 st.markdown("# Home Page")
-st.markdown("---")
+
+home_expander = st.expander("Introduction", expanded=True)
+home_expander.markdown("""
+    ### Welcome to the Hinf Controller project for and omnidirectional robot!
+    #### This a Python port of my Control Engineering Capstone project, originally done in Matlab.
+    
+    #### The motivation for this project is to show that almost everything can be done with Python, even a Control System project, area that is dominated by Matlab. 
+       
+    * This page will cover the theoretical topics of the project.
+    * The topics can be switched on the sidebar.  
+    * For playing with project data, choose the corresponding page on the top of the sidebar.
+
+
+""")
+home_expander.markdown("---")
 st.sidebar.markdown("# Home Page")
 st.sidebar.markdown("---")
 st.sidebar.markdown("## Topics")
