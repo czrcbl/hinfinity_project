@@ -53,10 +53,12 @@ def triple_plot2(data1, data2, title1, title2, figsize=(8, 8)):
     plt.grid(True)
     
     plt.suptitle('States')
+    return fig
 
 
 def plot_poles(poles, q, r, c='r', label='Poles'):
     
+    fig = plt.figure()
     plt.scatter([x.real for x in poles], [x.imag for x in poles], c=c, label=label)
     plt.title('Poles')
     plt.legend()
@@ -70,7 +72,8 @@ def plot_poles(poles, q, r, c='r', label='Poles'):
     ax.set_xlim((min(np.min(np.real(poles)), q-r), max(np.max(np.real(poles)), q+r)))
     ax.set_ylim((min(np.min(np.imag(poles)), -r), max(np.max(np.imag(poles)), r)))
     
-
+    return fig
+    
 def scatter_controllers(arrs, titles, figsize=(8, 8)):
     
     N = np.arange(0, len(arrs[0]))
@@ -79,6 +82,8 @@ def scatter_controllers(arrs, titles, figsize=(8, 8)):
         ax.scatter(N, arrs[i])
         ax.set_title(titles[i])
         ax.grid()
+
+    return fig
 
 
 def plot_pose(pose, traj, figsize=(8, 8)):
@@ -93,6 +98,7 @@ def plot_pose(pose, traj, figsize=(8, 8)):
     fig.suptitle('Trajectory')
     plt.legend()
     plt.grid(True)
+    return fig
 
 
 if __name__ == '__main__':
