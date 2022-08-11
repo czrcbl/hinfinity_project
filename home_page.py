@@ -233,7 +233,13 @@ def main():
     st.sidebar.markdown(SUBTITLE)
 
     tabs = st.tabs(
-        ["Introduction", "Robot Description", "Controller Description", "Bibliography"]
+        [
+            "Introduction",
+            "Robot Description",
+            "Controller Description",
+            "Test Videos",
+            "Bibliography",
+        ]
     )
 
     with tabs[0]:
@@ -257,6 +263,22 @@ def main():
         project_description()
 
     with tabs[3]:
+        st.markdown(
+            r"""
+        ## Square Trajectory  
+        $V_{navigation} = 0.3 m/s$
+        """
+        )
+        st.video("assets/traj_quad_vnav03.mp4")
+
+        st.markdown(
+            r"""
+        ## 8 Trajectory  
+        $V_{navigation} = 0.3 m/s$
+        """
+        )
+        st.video("assets/traj_8_vnav03_2.mp4")
+    with tabs[4]:
         project_bibliography()
 
 
