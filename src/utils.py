@@ -1,45 +1,125 @@
-import numpy as np
+import json
 import pickle
+from datetime import datetime
+
+import numpy as np
+from .evaluation import StepInfoData
+
+
+class Controller:
+    """Holds all controller's information"""
+
+    def __init__(self, K, norm, q, r, P, status, poles):
+        self.K = K
+        self.norm = norm
+        self.q = q
+        self.r = r
+        self.P = P
+        self.status = status
+        self.poles = poles
+        self.stepinfo = None
+        self.u_max_var = None
+
+    def __str__(self):
+        return (
+            "Center: {0:.2f}\n"
+            "Radius: {1:.2f}\n"
+            "Hinf Norm: {2:.2f}\n"
+            "Status: {3}\n"
+            "Poles: {4}".format(self.q, self.r, self.norm, self.status, self.poles)
+        )
+
+    def __repr__(self):
+        return str(self)
+
+    def todict(self):
+        return {
+            "K": self.K.tolist(),
+            "norm": float(self.norm),
+            "q": float(self.q),
+            "r": float(self.r),
+            "P": self.P.tolist(),
+            "status": self.status,
+            "poles": [str(p) for p in self.poles.tolist()],
+            "u_max_var": float(self.u_max_var),
+            "steopinfo": self.stepinfo.todict(),
+        }
+
+    @classmethod
+    def fromdict(cls, d):
+        c = cls(
+            np.array(d["K"]),
+            d["norm"],
+            d["q"],
+            d["r"],
+            np.array(d["P"]),
+            d["status"],
+            np.array([complex(p) for p in d["poles"]]),
+        )
+        c.u_max_var = d["u_max_var"]
+        c.stepinfo = StepInfoData(**d["steopinfo"])
+        return c
+
+
+def now():
+    return datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
 
 
 def save(file_name, obj):
-    
-    with open(file_name, 'wb') as f:
+
+    with open(file_name, "wb") as f:
         pickle.dump(obj, f)
-        
-        
+
+
 def load(file_name):
-    
-    with open(file_name, 'rb') as f:
+
+    with open(file_name, "rb") as f:
         obj = pickle.load(f)
-        
+
     return obj
+
+
+def load_json(path):
+    with open(path, "r") as f:
+        data = json.load(f)
+
+    return data
+
+
+def save_json(data, path):
+    with open(path, "w") as f:
+        json.dump(data, f)
+
+
+def load_controllers_json(path):
+    data = load_json(path)
+    return [Controller.fromdict(d) for d in data]
 
 
 def make_ref(ref, N):
     return np.tile(ref, (N, 1))
 
 
-def make_inv_ref(ref1, ref2,  N):
-    a = np.tile(ref1, (int(N/2), 1))
-    b = np.tile(ref2, (int(N/2), 1))
+def make_inv_ref(ref1, ref2, N):
+    a = np.tile(ref1, (int(N / 2), 1))
+    b = np.tile(ref2, (int(N / 2), 1))
 
     return np.vstack((a, b))
 
 
-def get_clpoles(Ad, Bd, K): 
+def get_clpoles(Ad, Bd, K):
 
-    Z = np.zeros((3,3));
-    I = np.eye(3);
-    B2 = np.block([[Bd] , [Z]]);
+    Z = np.zeros((3, 3))
+    I = np.eye(3)
+    B2 = np.block([[Bd], [Z]])
     A = np.block([[Ad, Z], [I, I]])
 
     return np.linalg.eig(A + B2.dot(K))[0]
 
 
 def get_clmat(Ad, Bd, Cd, Dd, K):
-    
-    Z = np.zeros((3,3))
+
+    Z = np.zeros((3, 3))
     I = np.eye(3)
     A = np.block([[Ad, Z], [I, I]])
     B1 = np.vstack((I, Z))
@@ -47,113 +127,52 @@ def get_clmat(Ad, Bd, Cd, Dd, K):
     C1 = np.block([[I, Z], [Z, Z]])
     D11 = np.block([[Z], [Z]])
     D12 = np.block([[Z], [I]])
-    
+
     Acl = A + B2.dot(K)
     Bcl = B1
     Ccl = C1 + D12.dot(K)
     Dcl = D11
-    
+
     return Acl, Bcl, Ccl, Dcl
-
-
-class StepInfoData:
-    
-    def __init__(self, **kargs):
-        self.__dict__.update(kargs)
-    
-    def __str__(self):
-        s = ''
-        for key, val in self.__dict__.items():
-            s = s + '%s: %.3f\n' % (key, val)
-        
-        return s[:-1]
-    
-    def __repr__(self):
-        s = 'StepInfoData('
-        for key, val in self.__dict__.items():
-            s = s + key + '=' + str(val) + ', '
-
-        return s[:-2] + ')'
-            
-            
-def step_info(time, y):
-    
-    assert len(time) == len(y), 'signal and time must have the same length'
-    assert len(y.shape) <= 2, 'signal must be 1 or 2 dimensional'
-    assert  (len(y.shape) == 1) or (len(y) == y.shape[0] * y.shape[2]), '2d array must be a row or column vector'
-    
-    # in case y be a np.matrix
-    y = np.array(y).flatten()
-    
-    for i in range(len(y)):
-        s = y[i:]
-        if len(s) == 1:
-            sval = s[0]
-            st = time[i]
-        else:
-            d = np.min(s) + (np.max(s) - np.min(s))/2
-            if (d * 1.02 >= np.max(s)) and (d * 0.98 <= np.min(s)):
-                sval = d
-                st = time[i]
-                break
-    
-    os = (np.max(y) - sval)/sval
-    pt = time[np.argmax(y)]
-    
-    idx = np.where((y >= 0.1 * sval) & (y <= 0.9 * sval))[0] 
-    if len(idx) == 0:
-        rt = float('NaN')
-    else:
-        io = idx[0]
-        for i in idx[1:]:
-            if i != io + 1:
-                break
-            io = i
-        
-        rt = time[io] - time[idx[0]]
-    
-    data = StepInfoData(RiseTime=rt, SettlingTime=st, Overshoot=os, 
-                        PeakTime=pt)
-    
-    return data
 
 
 def load_square_traj():
     """One meter side, 20cm spaced marks"""
-    traj = np.array([
-                    [0, 0, 0],
-                    [0.2, 0, 0],
-                    [0.4, 0, 0],
-                    [0.6, 0, 0],
-                    [0.8, 0, 0],
-                    [1, 0, 0],
-                    [1, 0.2, 0],
-                    [1, 0.4, 0],
-                    [1, 0.6, 0],
-                    [1, 0.8, 0],
-                    [1, 1, 0],
-                    [0.8, 1, 0],
-                    [0.6, 1, 0],
-                    [0.4, 1, 0],
-                    [0.2, 1, 0],
-                    [0, 1, 0],
-                    [0, 0.8, 0],
-                    [0, 0.6, 0],
-                    [0, 0.4, 0],
-                    [0, 0.2, 0],
-                    [0, 0, 0]
-                    ])
+    traj = np.array(
+        [
+            [0, 0, 0],
+            [0.2, 0, 0],
+            [0.4, 0, 0],
+            [0.6, 0, 0],
+            [0.8, 0, 0],
+            [1, 0, 0],
+            [1, 0.2, 0],
+            [1, 0.4, 0],
+            [1, 0.6, 0],
+            [1, 0.8, 0],
+            [1, 1, 0],
+            [0.8, 1, 0],
+            [0.6, 1, 0],
+            [0.4, 1, 0],
+            [0.2, 1, 0],
+            [0, 1, 0],
+            [0, 0.8, 0],
+            [0, 0.6, 0],
+            [0, 0.4, 0],
+            [0, 0.2, 0],
+            [0, 0, 0],
+        ]
+    )
     return traj
 
 
 def load_8_traj():
 
-    angles = np.array([0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165,
-                       180])
+    angles = np.array([0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180])
     angles1 = np.hstack((angles, np.flip(-angles[:-1], 0)))
-    angles1 = np.pi/180*angles1
+    angles1 = np.pi / 180 * angles1
     angles2 = np.hstack((np.flip(angles, 0), -angles[1:]))
-    angles2 = np.pi/180 * angles2
+    angles2 = np.pi / 180 * angles2
     circle1 = np.zeros(shape=(len(angles1), 3))
     circle1[:, 0] = np.cos(angles1)
     circle1[:, 1] = np.sin(angles1)
@@ -171,9 +190,5 @@ def load_8_traj():
 
 def load_circle_J_traj():
     from scipy.io import loadmat
-    
-    return loadmat('data/circle_traj_J.mat')['traj']
 
-
-if __name__ == '__main__':
-    pass
+    return loadmat("data/circle_traj_J.mat")["traj"]

@@ -1,16 +1,22 @@
 import streamlit as st
 import pandas as pd
+
 st.set_page_config(page_title="Home Page", layout="wide")
 
 TITTLE = "# 🕮 Home Page - Theory"
+SUBTITLE = r"$\mathcal{H}_\infty$ Control for a Omnidirectional Robot"
+
 
 def robot_description():
 
     st.markdown("## Robot Description")
-    
-    st.write("A scheme of the the forces and torques acting over the robots' center of mass.")
-    st.image('figures/diagrama_dinamica_english.png', width=600)
-    st.markdown(r"""
+
+    st.write(
+        "A scheme of the the forces and torques acting over the robots' center of mass."
+    )
+    st.image("figures/diagrama_dinamica_english.png", width=600)
+    st.markdown(
+        r"""
     The forces and torque in the robot's center of mass are given by the following equations:
     $$
     M\dot{v}(t) = F_v(t) - F_{va}(t) \\
@@ -48,10 +54,12 @@ def robot_description():
     friction for low velocities. 
     
     Next figure presents a diagram where the four effects can be visualized.
-    """)
+    """
+    )
     st.image("figures/frictions.png", width=600)
 
-    st.markdown(r"""
+    st.markdown(
+        r"""
     The frontal and normal friction forces; and the friction torque are given by: 
 
     $$
@@ -134,15 +142,18 @@ def robot_description():
     \end{bmatrix}
     $$
     $I$ is a identity matrix and $0$ is a square matrix of zeros, both of $3^{rd}$ order.
-    """)
+    """
+    )
+
 
 def project_description():
 
     st.markdown("## Controller Description")
-    
-    st.image('figures/forma_geral.png', width=600)
 
-    st.markdown(r"""
+    st.image("figures/forma_geral.png", width=600)
+
+    st.markdown(
+        r"""
     
     ## $\mathcal{H}_\infty$ Controller
 
@@ -197,41 +208,57 @@ def project_description():
 
     By allocating the poles, it is possible to achieve a trade-off between the 
     system's transitory response and the magnitude of the $\mathcal{H}_\infty$ norm.
-    """)
+    """
+    )
+
 
 def project_bibliography():
 
     st.markdown("## Bibliography")
-
-    bib_df = pd.read_csv('assets/bibliography.csv', dtype={"Publication Year": str})
-    bib_df = bib_df[bib_df["Author"].notna()]
+    bib_df = pd.read_csv("assets/bibliography.csv", dtype={"Publication Year": str})
     st.dataframe(bib_df)
 
 
-page_names_to_funcs = {
-    "Robot Description": robot_description,
-    "Controller Description": project_description,
-    "Bibliography": project_bibliography
-}
+def main():
+    page_names_to_funcs = {
+        "Robot Description": robot_description,
+        "Controller Description": project_description,
+        "Bibliography": project_bibliography,
+    }
 
-st.markdown(TITTLE)
+    st.markdown(TITTLE)
+    st.markdown(SUBTITLE)
 
-home_expander = st.expander("Introduction", expanded=True)
-home_expander.markdown("""
-    ### Welcome to the Hinf Controller project for and omnidirectional robot!
-    #### This a Python port of my Control Engineering Capstone project, originally done in Matlab.
-    
-    #### The motivation for this project is to show that almost everything can be done with Python, even a Control System project, area that is dominated by Matlab. 
-       
-    * This page will cover the theoretical topics of the project.
-    * The topics can be switched on the sidebar.  
-    * For playing with project data, choose the corresponding page on the top of the sidebar.
-""")
-home_expander.markdown("---")
-st.sidebar.markdown(TITTLE)
-st.sidebar.markdown("## Topics")
+    st.sidebar.markdown(TITTLE)
+    st.sidebar.markdown(SUBTITLE)
 
-selected_page = st.sidebar.radio("Select a topic", page_names_to_funcs.keys())
-page_names_to_funcs[selected_page]()
+    tabs = st.tabs(
+        ["Introduction", "Robot Description", "Controller Description", "Bibliography"]
+    )
+
+    with tabs[0]:
+        # home_expander = st.expander("Introduction", expanded=True)
+
+        st.image("figures/robo_foto.jpg")
+        st.markdown(
+            """
+            ### Welcome to the Hinf Controller project for and omnidirectional robot!
+            #### This a Python port of my Control Engineering Capstone project, originally done in Matlab.
+            
+            #### The motivation for this project is to show that almost everything can be done with Python, even a Control System project, area that is dominated by Matlab. 
+        """
+        )
+        st.markdown("---")
+
+    with tabs[1]:
+        robot_description()
+
+    with tabs[2]:
+        project_description()
+
+    with tabs[3]:
+        project_bibliography()
 
 
+if __name__ == "__main__":
+    main()

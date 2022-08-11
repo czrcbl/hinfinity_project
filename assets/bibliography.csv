@@ -1,0 +1,26 @@
+Publication Year,Title,Author,Item Type
+1987,A course in H control theory,"Francis, Bruce A.",book
+1989,State-space solutions to standard H2 and H∞ control problems,"Doyle, John C.; Glover, Keith; Khargonekar, Pramod P.; Francis, Bruce A.",journalArticle
+1994,A linear matrix inequality approach toH∞ control,"Gahinet, Pascal; Apkarian, Pierre",journalArticle
+1996,H/sub/spl infin//design with pole placement constraints: an LMI approach,"Chilali, Mahmoud; Gahinet, Pascal",journalArticle
+1996,Robust and optimal control,"Zhou, Kemin; Doyle, John Comstock; Glover, Keith; others",book
+1998,Friction Models and Friction Compensation,"Olsson, H.; Gäfvert, M.; Lischinsky, P.; Wit, C. Canudas de; Åström, K.J.",document
+1999,Robust Pole Placement in LMI Regions,"Chilali, Mahmoud; Gahinet, Pascal; Apkarian, Pierre",journalArticle
+2000,The H_∞ Control Problem: A State Space Approach,"Stoorvogel, Anton A.",book
+2002,Extended H 2 and H norm characterizations and controller parametrizations for discrete-time systems,"De Oliveira, M. C.; Geromel, J. C.; Bernussou, J.",journalArticle
+2004,Robust Control Systems,"Mackenroth, Uwe",book
+2005,Robust control design with MATLAB,"Gu, Da-Wei; Petkov, P. Hr; Konstantinov, M. M.",book
+2006,System Identification without Lennart Ljung: what would have been different?,"Gevers, Michel; others",journalArticle
+2006,Robot modeling and control,"Spong, Mark W.; Hutchinson, Seth; Vidyasagar, M.",book
+2009,"Analysis, Design, and Control of an Omnidirectional Mobile Robot in Rough Terrain","Udengaard, Martin; Iagnemma, Karl",journalArticle
+2009,Estratégia de controle para o seguimento de refências em sistemas de tempo discreto com atuadores saturantes,"Flores, Jeferson Vieira; Silva Junior, Joao Manoel Gomes da",journalArticle
+2009,Practical Approach of Modeling and Parameters Estimation for Omnidirectional Mobile Robots,"Conceicao, A.S.; Moreira, A.P.; Costa, P.J.",journalArticle
+2011,Introduction to autonomous mobile robots,"Siegwart, Roland; Nourbakhsh, Illah Reza; Scaramuzza, Davide",book
+2013,Computer-controlled systems: theory and design,"Aström, Karl J.; Wittenmark, Björn",book
+2013,MODELAGEM DE ROBÔS MÓVEIS COM RODAS OMNIDIRECIONAIS INCLUINDO MODELOS ESTÁTICOS DE ATRITO.pdf,"Conceição, Andre; Dourado Correia, Mariane; Martinez, Luciana",journalArticle
+2013,CONTROLE Hinf APLICADO A UM ROBÔ OMNIDIRECIONAL,"AUGELLO, LORENZO L.; ARAÚJO, HUMBERTO X.; CONCEIÇÃO, ANDRÉ GS",journalArticle
+2014,Design and Implementation of Model-Predictive Control With Friction Compensation on an Omnidirectional Mobile Robot,"Barreto S., Julio Cesar Lins; Conceição, Andre Gustavo Scolari; Dorea, Carlos E. T.; Martinez, Luciana; de Pieri, Edson Roberto",journalArticle
+2014,Projeto e Desenvolvimento De Um Sistema De Controle Embarcado Aplicado a Robótica Móvel,"Santos, Jovelino Torres dos",document
+2016,Remote Control of an Omnidirectional Mobile Robot with Time-Varying Delay and Noise Attenuation,"Santos, Jessivaldo; Conceição, André G. S.; Santos, Tito L. M.; Araújo, Humberto X.",document
+2016,Modeling and friction estimation for wheeled omnidirectional mobile robots,"Conceição, Andre G. S.; Correia, Mariane D.; Martinez, Luciana",journalArticle
+,The H∞ control problem is solved,"Apkarian, Pierre; Noll, Dominikus",journalArticle
