@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-st.set_page_config(page_title="Home Page", layout="wide")
+st.set_page_config(page_title="Home Page")
 
 TITTLE = "# 🕮 Home Page - Theory"
 SUBTITLE = r"$\mathcal{H}_\infty$ Control for a Omnidirectional Robot"
@@ -254,7 +254,15 @@ def main():
             #### The motivation for this project is to show that almost everything can be done with Python, even a Control System project, area that is dominated by Matlab. 
         """
         )
-        st.markdown("---")
+        with open("assets/TFG_Cezar_Lemos.pdf", "rb") as f:
+            data = f.read()
+
+        st.download_button(
+            "Download the Work PDF (Portuguese)",
+            data=data,
+            file_name="FG_Cezar_Lemos.pdf",
+        )
+        # st.markdown("---")
 
     with tabs[1]:
         robot_description()
