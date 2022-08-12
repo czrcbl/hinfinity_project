@@ -260,7 +260,7 @@ def main():
         st.download_button(
             "Download the Work PDF (Portuguese)",
             data=data,
-            file_name="FG_Cezar_Lemos.pdf",
+            file_name="TFG_Cezar_Lemos.pdf",
         )
         # st.markdown("---")
 
