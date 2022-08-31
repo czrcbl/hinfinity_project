@@ -128,7 +128,7 @@ def main():
 
     stroke_width = 1
     point_display_radius = 3
-    stroke_color = "#000000"
+    stroke_color = "#FF0000"
     bg_color = "#FFFFFF"
     realtime_update = True
 
