@@ -132,64 +132,11 @@ def main():
     bg_color = "#FFFFFF"
     realtime_update = True
 
-    tab_canvas, tab_controller, tab_video, tab_plots = st.tabs(
-        ["Path Drawing", "Controller Data", "Simulation Video", "Simulation Plots"]
-    )
+    # tab_canvas, tab_controller, tab_video, tab_plots = st.tabs(
+    #     ["Path Drawing", "Controller Data", "Simulation Video", "Simulation Plots"]
+    # )
 
-    with tab_canvas:
-        st.markdown(
-            """
-            ### Path Drawing Canvas
-
-            Draw the robot path, the side of the canvas has a dimension of 10 meters.
-
-            Choose the drawing tool on the side bar, the drawing can be reset on the trash can below the canvas.
-        """
-        )
-        # lock_drawing = st.checkbox("Lock Drawing")
-
-        cols = st.columns([2, 2])
-        field_wh = cols[0].number_input(
-            "Field Width and Height (m/s)",
-            value=DEFAULT_FIELD_WH,
-            min_value=3,
-            max_value=10,
-        )
-        drawing_mode = cols[1].selectbox(
-            "Drawing tool:", ("freedraw", "point", "line", "rect", "circle")
-        )
-
-        canvas_result = st_canvas(
-            fill_color="rgba(255, 165, 0, 0.3)",  # Fixed fill color with some opacity
-            stroke_width=stroke_width,
-            stroke_color=stroke_color,
-            background_color=bg_color,
-            background_image=Image.fromarray(generate_start_frame(field_wh)),
-            update_streamlit=realtime_update,
-            height=DEFAULT_CANVAS_WH,
-            width=DEFAULT_CANVAS_WH,
-            drawing_mode=drawing_mode,
-            # initial_drawing=st.session_state["json_data"]
-            # if "json_data" in st.session_state and lock_drawing
-            # else None,
-            point_display_radius=point_display_radius if drawing_mode == "point" else 0,
-            display_toolbar=True,
-            key="canvas",
-        )
-
-        if canvas_result.json_data is not None:
-            objects = pd.json_normalize(
-                canvas_result.json_data["objects"]
-            )  # need to convert obj to str because PyArrow
-            for col in objects.select_dtypes(include=["object"]).columns:
-
-                objects[col] = objects[col].astype("str")
-            # st.dataframe(objects)
-
-        st.write(
-            "The drawing will be erased after switching to the next tab, so click in Start Simulation."
-        )
-        start_simulation = st.button("Start Simulation")
+    # with tab_canvas:
 
     st.sidebar.markdown(
         """
@@ -236,6 +183,8 @@ def main():
         format_func=lambda c: f"Norm: {c.norm:.2f}, Center: {c.q:.2f}, Radius: {c.r:.2f}",
     )
 
+    tab_controller = st.expander("Controller Data", expanded=False)
+
     tab_controller.text(str(c))
 
     tab_controller.text(str(c.stepinfo))
@@ -246,22 +195,63 @@ def main():
     fig = plot_poles(c.poles, c.q, c.r)
     tab_controller.pyplot(fig)
 
-    if not start_simulation:
-        tab_video.warning(
-            "Simulation not started, press Start Simulation button on the Path Drawing Tab"
-        )
-        tab_plots.warning(
-            "Simulation not started, press Start Simulation button on the Path Drawing Tab"
-        )
-        return
+    st.markdown(
+        """
+        ### Path Drawing Canvas
 
-    if len(objects) == 0:
-        st.sidebar.warning("Draw Trajectory First")
-        return
+        The drawing can be reset on the trash can below the canvas.
+    """
+    )
+    # lock_drawing = st.checkbox("Lock Drawing")
+
+    cols = st.columns([2, 2])
+    field_wh = cols[0].number_input(
+        "Field Width and Height (m)",
+        value=DEFAULT_FIELD_WH,
+        min_value=3,
+        max_value=10,
+    )
+    # drawing_mode = cols[1].selectbox(
+    #     "Drawing tool:", ("freedraw", "point", "line", "rect", "circle")
+    # )
+    drawing_mode = "freedraw"
+
+    canvas_result = st_canvas(
+        fill_color="rgba(255, 165, 0, 0.3)",  # Fixed fill color with some opacity
+        stroke_width=stroke_width,
+        stroke_color=stroke_color,
+        background_color=bg_color,
+        background_image=Image.fromarray(generate_start_frame(field_wh)),
+        update_streamlit=realtime_update,
+        height=DEFAULT_CANVAS_WH,
+        width=DEFAULT_CANVAS_WH,
+        drawing_mode=drawing_mode,
+        # initial_drawing=st.session_state["json_data"]
+        # if "json_data" in st.session_state and lock_drawing
+        # else None,
+        point_display_radius=point_display_radius if drawing_mode == "point" else 0,
+        display_toolbar=True,
+        key="canvas",
+    )
+
+    objects = None
+
+    if canvas_result.json_data is not None:
+        objects = pd.json_normalize(
+            canvas_result.json_data["objects"]
+        )  # need to convert obj to str because PyArrow
+        for col in objects.select_dtypes(include=["object"]).columns:
+
+            objects[col] = objects[col].astype("str")
+        # st.dataframe(objects)
+
+    if objects is None or len(objects) == 0:
+        st.warning("Draw Trajectory First")
+        st.stop()
+
+    points = objects2points(objects, field_wh / DEFAULT_CANVAS_WH)
 
     with st.spinner():
-        points = objects2points(objects, field_wh / DEFAULT_CANVAS_WH)
-
         sim = Simulation(sysdat.csys, sysdat.Ts)
 
         trajectory = np.array(points)
@@ -277,24 +267,20 @@ def main():
             pose_vec, states_vec, image_wh=2048, field_wh=field_wh
         )
 
-        conv_video_path = sim_drawer.generate_video()
+        conv_video_path = sim_drawer.generate_video(skip_frames=5)
 
-    with tab_video:
-        st.markdown(
-            """
-            ## Robot Movement Video """
-        )
+    st.markdown(
+        """
+        ## Robot Movement Video """
+    )
 
-        st.video(conv_video_path, format="MPEG-4")
+    st.video(conv_video_path, format="MPEG-4")
 
-    with tab_plots:
+    fig = plot_pose(pose_vec, trajectory, size=field_wh)
+    st.pyplot(fig)
 
-        cols = st.columns(2)
-        fig = plot_pose(pose_vec, trajectory, size=field_wh)
-        cols[0].pyplot(fig)
-
-        fig = triple_plot2(states_vec, ref_vec, "States", "Reference", figsize=(8, 10))
-        cols[1].pyplot(fig)
+    fig = triple_plot2(states_vec, ref_vec, "States", "Reference", figsize=(8, 10))
+    st.pyplot(fig)
 
 
 main()

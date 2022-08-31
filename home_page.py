@@ -3,7 +3,7 @@ import pandas as pd
 
 st.set_page_config(page_title="Home Page")
 
-TITTLE = "# 🕮 Home Page - Theory"
+TITTLE = "# 📚 Home Page - Theory"
 SUBTITLE = r"$\mathcal{H}_\infty$ Control for a Omnidirectional Robot"
 
 
@@ -103,7 +103,7 @@ def robot_description():
 
     In order to obtain null tracking error for constant references, an integral action should be added to the plant.
 
-    In the \hinf{} project, this was achieved by the adoption of following new state vector:
+    In the $\mathcal{H}_\infty$ project, this was achieved by the adoption of following new state vector:
     $$
     x_{k} = \begin{bmatrix}
     e_{k} \\ \eta_{k},
@@ -158,7 +158,7 @@ def project_description():
     ## $\mathcal{H}_\infty$ Controller
 
 
-    On this technique formulation, the generalized form is adopted, it is represented on Figure \ref{fig:forma_geral}. 
+    On this technique formulation, the generalized form is adopted, it is represented on Figure above. 
     In this form, $u$ is the vector of control inputs; $y$ is the vector of outputs; $w$ is the vector of external disturbances and $z$ is the vector of controlled outputs.
     On this setting, we want to project an optimal controller regarding the $\mathcal{H}_\infty$ norm of $H_{zw}(s)$, the transfer function  from the input $w$ to the output $z$.
 

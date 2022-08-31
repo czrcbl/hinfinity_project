@@ -178,13 +178,14 @@ class SimulationDrawer:
 
         v_vector_orig = np.array([state[0], 0]) / 2
         v_vector_global = self.rotate(v_vector_orig, pose)
-
+        min_size = min(frame.shape[:2])
+        arrow_width = int(min_size / 300)
         frame = cv2.arrowedLine(
             frame,
             self.cp(pose[:2]),
             self.cp([pose[0] + v_vector_global[0], pose[1] + v_vector_global[1]]),
             (0, 0, 255),
-            1,
+            arrow_width,
         )
 
         vn_vector_orig = np.array([0, state[1]]) / 2
@@ -194,7 +195,7 @@ class SimulationDrawer:
             self.cp(pose[:2]),
             self.cp([pose[0] + vn_vector_global[0], pose[1] + vn_vector_global[1]]),
             (0, 0, 255),
-            1,
+            arrow_width,
         )
 
         return frame
@@ -268,7 +269,7 @@ class SimulationDrawer:
         out[:, self.image_wh :, :] = background
         return out.astype(np.uint8)
 
-    def generate_video(self):
+    def generate_video(self, skip_frames=5):
 
         os.makedirs("temp", exist_ok=True)
         # frame_template = (255 * np.ones((self.image_wh, self.image_wh, 3))).astype(
@@ -290,10 +291,12 @@ class SimulationDrawer:
         writer = cv2.VideoWriter(
             temp_video_path,
             fourcc,
-            self.FPS,
+            self.FPS / skip_frames,
             (self.image_wh + self.image_wh // 5, self.image_wh),
         )
-        for idx, (pose, state) in enumerate(zip(self.pose_vec, self.state_vec)):
+        for idx, (pose, state) in enumerate(
+            zip(self.pose_vec[::skip_frames], self.state_vec[::skip_frames])
+        ):
             # print("Here")
             frame = frame_template.copy()
             frame = self.draw_path(frame, self.pose_vec[:idx])
