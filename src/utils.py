@@ -42,7 +42,7 @@ class Controller:
             "status": self.status,
             "poles": [str(p) for p in self.poles.tolist()],
             "u_max_var": float(self.u_max_var),
-            "steopinfo": self.stepinfo.todict(),
+            "stepinfo": self.stepinfo.todict(),
         }
 
     @classmethod
@@ -57,7 +57,7 @@ class Controller:
             np.array([complex(p) for p in d["poles"]]),
         )
         c.u_max_var = d["u_max_var"]
-        c.stepinfo = StepInfoData(**d["steopinfo"])
+        c.stepinfo = StepInfoData(**d["stepinfo"])
         return c
 
 
