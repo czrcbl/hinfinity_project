@@ -5,9 +5,11 @@ This repository is a Python implementation of my capstone project, [Controle Hin
 
 The project is presented as a Streamlit app with a theory page and an interactive simulation page, where you can draw a path and watch the robot follow it.
 
+Dependencies are managed with [uv](https://docs.astral.sh/uv/):
+
 ```bash
-pip install -r requirements.txt
-streamlit run home_page.py
+uv sync
+uv run streamlit run home_page.py
 ```
 
 `ffmpeg` must be installed to generate the simulation videos.
@@ -36,7 +38,7 @@ The robot parameters and its state-space representation are defined in `src/syst
 A set of controllers for a grid of disk centers and radii can be computed with:
 
 ```bash
-python cli.py multiproject -o data/controllers.json -c 0.1 -r 0.1
+uv run python cli.py multiproject -o data/controllers.json -c 0.1 -r 0.1
 ```
 
 ## Simulation
