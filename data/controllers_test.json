@@ -89,7 +89,7 @@
             "0.004969083815818023"
         ],
         "u_max_var": 18.49952819571253,
-        "steopinfo": {
+        "stepinfo": {
             "RiseTime": 0.0,
             "SettlingTime": 0.54,
             "Overshoot": 0.018552528206183916,
@@ -186,7 +186,7 @@
             "0.02364746946509864"
         ],
         "u_max_var": 32.266829779579325,
-        "steopinfo": {
+        "stepinfo": {
             "RiseTime": 0.0,
             "SettlingTime": 0.48,
             "Overshoot": 0.07497188170354133,
@@ -283,7 +283,7 @@
             "0.7998801807481114"
         ],
         "u_max_var": 14.64056343534636,
-        "steopinfo": {
+        "stepinfo": {
             "RiseTime": 0.12,
             "SettlingTime": 0.6,
             "Overshoot": 0.018646374714319385,
@@ -380,7 +380,7 @@
             "(0.797208318576575+0j)"
         ],
         "u_max_var": 6.215640434206522,
-        "steopinfo": {
+        "stepinfo": {
             "RiseTime": 0.36,
             "SettlingTime": 0.84,
             "Overshoot": 0.017834828767187453,
@@ -477,7 +477,7 @@
             "(0.20200726520221926+0j)"
         ],
         "u_max_var": 37.45947135264654,
-        "steopinfo": {
+        "stepinfo": {
             "RiseTime": 0.54,
             "SettlingTime": 2.34,
             "Overshoot": 0.0,
@@ -574,7 +574,7 @@
             "0.5326623684278172"
         ],
         "u_max_var": 30.24994977222477,
-        "steopinfo": {
+        "stepinfo": {
             "RiseTime": 0.0,
             "SettlingTime": 0.42,
             "Overshoot": 0.03586884559125451,
@@ -671,7 +671,7 @@
             "0.2782952684812568"
         ],
         "u_max_var": 34.647683742205736,
-        "steopinfo": {
+        "stepinfo": {
             "RiseTime": 0.3,
             "SettlingTime": 2.34,
             "Overshoot": 0.0016457255721704703,
@@ -768,7 +768,7 @@
             "0.527326640367335"
         ],
         "u_max_var": 22.67928189655865,
-        "steopinfo": {
+        "stepinfo": {
             "RiseTime": 0.0,
             "SettlingTime": 0.3,
             "Overshoot": 0.01998589964775605,
@@ -865,7 +865,7 @@
             "0.11998930794187673"
         ],
         "u_max_var": 48.835363738075536,
-        "steopinfo": {
+        "stepinfo": {
             "RiseTime": NaN,
             "SettlingTime": 2.34,
             "Overshoot": 2.3007856087740577,
@@ -962,7 +962,7 @@
             "0.6601591061934737"
         ],
         "u_max_var": 17.697576749195903,
-        "steopinfo": {
+        "stepinfo": {
             "RiseTime": 0.0,
             "SettlingTime": 0.54,
             "Overshoot": 0.01896505024946429,
