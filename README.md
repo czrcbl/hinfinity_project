@@ -1,22 +1,44 @@
-# hinfinty_project
-This repository contains the project performed in [Controle Hinf por Realimentação de Estados Aplicado a um Robô Omnidirecional](https://www.dropbox.com/s/hyhj96dbqk2cops/TFG_Cezar_Lemos.pdf?dl=0) in python. The code in this repository has some minor differences, as the sampling rate and some robot parameters, to the original project performed in the work.
+# hinfinity_project
+This repository is a Python implementation of my capstone project, [Controle Hinf por Realimentação de Estados Aplicado a um Robô Omnidirecional](assets/TFG_Cezar_Lemos.pdf) (state-feedback H∞ control applied to an omnidirectional robot, in Portuguese), originally developed in MATLAB. The code differs slightly from the original work in a few details, such as the sampling period and some robot parameters.
+
+## Running the App
+
+The project is presented as a Streamlit app with a theory page and an interactive simulation page, where you can draw a path and watch the robot follow it.
+
+```bash
+pip install -r requirements.txt
+streamlit run home_page.py
+```
+
+`ffmpeg` must be installed to generate the simulation videos.
+
+Alternatively, with Docker:
+
+```bash
+docker build -t hinfinity .
+docker run -p 8080:8080 hinfinity
+```
+
+and open http://localhost:8080.
 
 ## Robot
 
-![Dynamic Diagram](https://raw.githubusercontent.com/czrcbl/hinfinity_project/master/figures/diagrama_dinamica_english.png  "Dynamic Diagram")
+![Dynamic Diagram](figures/diagrama_dinamica_english.png "Dynamic Diagram")
 
-In the file `system_data.py` the robot parameters are defined and its state space representation is obtained.
+The robot parameters and its state-space representation are defined in `src/system_data.py`.
 
-## Project
+## Controller Design
 
-![general_form](https://raw.githubusercontent.com/czrcbl/hinfinity_project/master/figures/forma_geral.png)
+![General form](figures/forma_geral.png "General form")
 
-In the file `project.py`, functions to computer the H-infinty controller for an arbitrary system on the general form are defined.
+`src/project.py` contains the functions that compute the H∞ controller, with pole placement in a disk, for a system in the generalized form.
+
+A set of controllers for a grid of disk centers and radii can be computed with:
+
+```bash
+python cli.py multiproject -o data/controllers.json -c 0.1 -r 0.1
+```
 
 ## Simulation
 
-In the notebook `evaluation_SCS` the results of projects with the SCS solver are analyzed, a controller is chosen and simulations are performed.
-
-## Robot
-
-The folder `robot` contains code for the communication with the robot.
+The notebook `evaluation_SCS.ipynb` analyzes the controllers designed with the SCS solver, selects one and runs simulations with it.
