@@ -18,7 +18,7 @@ from streamlit_drawable_canvas import st_canvas
 DEFAULT_FIELD_WH = 5
 DEFAULT_CANVAS_WH = 500
 
-TITTLE = "# 🎮 Play with the Simulation"
+TITLE = "# 🎮 Play with the Simulation"
 
 
 @st.cache
@@ -27,7 +27,7 @@ def load_controllers():
     import sys
 
     sys.path.insert(0, str(Path(__file__).absolute().parents[1] / "src"))
-    all_controllers = load_controllers_json("data/controlers_test-q=0.1-r=0.1.json")
+    all_controllers = load_controllers_json("data/controllers_test-q=0.1-r=0.1.json")
     return all_controllers
 
 
@@ -123,8 +123,8 @@ def do_simulation(traj, v_nav, sim, K):
 
 def main():
 
-    st.markdown(TITTLE)
-    st.sidebar.markdown(TITTLE)
+    st.markdown(TITLE)
+    st.sidebar.markdown(TITLE)
 
     stroke_width = 1
     point_display_radius = 3
@@ -150,7 +150,7 @@ def main():
         """
         #### Controller Selection Parameters
 
-        Here follows a list of many projected controllers for various center and radius configurations, you can select one based on its performance to use for the simulation.
+        Below is a list of controllers designed for different pole-region centers and radii. Filter them by performance and select one to use in the simulation.
     """
     )
 
@@ -175,11 +175,11 @@ def main():
     idx = np.where((settling_time < max_st) & (u_var < max_u_var) & (norm < max_norm))[
         0
     ]
-    filt_controlers = sorted([controllers[ix] for ix in idx], key=lambda c: c.norm)
+    filt_controllers = sorted([controllers[ix] for ix in idx], key=lambda c: c.norm)
 
     c = st.sidebar.selectbox(
-        f"Filtered Controllers (total = {len(filt_controlers)})",
-        filt_controlers,
+        f"Filtered Controllers (total = {len(filt_controllers)})",
+        filt_controllers,
         format_func=lambda c: f"Norm: {c.norm:.2f}, Center: {c.q:.2f}, Radius: {c.r:.2f}",
     )
 
@@ -190,7 +190,7 @@ def main():
     tab_controller.text(str(c.stepinfo))
 
     tab_controller.markdown(
-        "The blue circle represents the constraint on the poles position."
+        "The blue circle shows the region the poles are constrained to."
     )
     fig = plot_poles(c.poles, c.q, c.r)
     tab_controller.pyplot(fig)
@@ -199,7 +199,7 @@ def main():
         """
         ### Path Drawing Canvas
 
-        The drawing can be reset on the trash can below the canvas.
+        Use the trash can icon below the canvas to clear the drawing.
     """
     )
     # lock_drawing = st.checkbox("Lock Drawing")
@@ -246,7 +246,7 @@ def main():
         # st.dataframe(objects)
 
     if objects is None or len(objects) == 0:
-        st.warning("Draw Trajectory First")
+        st.warning("Draw a trajectory on the canvas to start the simulation.")
         st.stop()
 
     points = objects2points(objects, field_wh / DEFAULT_CANVAS_WH)
